@@ -1,0 +1,58 @@
+# netcat backpipe relay to ssh, do this on the first hop
+# backpipe is the name we are giving it, could be anything you want
+mknod backpipe p
+nc -l -p <inport> 0<backpipe | nc 127.0.0.1 22 1>backpipe
+# then connect from your host
+ssh username@firsthop.net -p <inport>
+
+# SSH Port forwarding example
+Middle host: 192.168.2.2
+Final host: 192.168.2.3
+Listen port: 33890
+Target port: 3389
+ssh -L 33890:192.168.2.3:3389 user@192.168.2.2
+
+# SSH reverse listener example for catching callbacks
+This will log into 192.168.2.2 and make it listen on 2222 forwarding traffic back to 22 on the machine you executed the command from
+192.168.2.2 will listen on 2222, forward connections to 127.0.0.1:22
+ssh -f -N -R 0.0.0.0:2222:127.0.0.1:22user@192.168.2.2
+!!!! This will fail if gateway ports aren't allowed. Add this to /etc/ssh/sshd_config
+Match User root
+	GatewayPorts clientspecified
+
+# Creating a background SSH SOCKS Proxy listening on 9001
+ssh -f -N -D 9001 root@1.2.3.4 &
+
+# combine socat and ssh for a forward port through an existing SOCKS proxy without proxychains
+# forward 33890 to 3389
+ssh -D 9001 -f -N root@1.2.3.4 &
+socat TCP4-LISTEN:33890,fork SOCKS4:127.0.0.1:192.168.1.100:3389,socksport=9001
+
+# using proxychains with a custom config
+# THIS ONLY WORKS IN PROXYCHAINS V4
+#proxy.conf
+strict_chain
+quiet_mode
+proxy_dns
+remote_dns_subnet 224
+tcp_read_time_out 15000
+tcp_connect_time_out 8000
+localnet 127.0.0.1/255.0.0.0
+
+
+[ProxyList]
+socks4 127.0.0.1 9001
+
+#Start a process using this chain:
+proxychains4 -f ~/pivot.conf /bin/bash
+
+!!!! Nmap doesn't work through proxychains !!!!
+
+
+
+
+
+
+
+
+
