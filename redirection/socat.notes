@@ -1,0 +1,22 @@
+# Tunnel a connection from a local TCP port to a remote service
+socat -v tcp4-listen:8000,reuseaddr,fork tcp4:6.6.6.6:80
+
+# Tunnel a plain test connection to SSL endpoint
+socat -v tcp4-listen:9000,reuseaddr,fork ssl:6.6.6.6:443,verify=0
+# or using a client side certificate
+socat -v tcp4-listen:9000,reuseaddr,fork ssl:6.6.6.6:443,verify=0,cert=./provisional_prov.pem
+# or using a server side certificate 
+socat -v openssl-listen:7000,cert=cert.pem,verify=0,reuseaddr,fork tcp4:6.6.6.6:6000
+
+
+# Using socat to inspect or modify SSL traffic
+# "Application" ==SSL==> socat #1 ---plain---> socat #2 ==SSL==> Remote service
+socat -v openssl-listen:6000,cert=cert.pem,verify=0,reuseaddr,fork tcp4:localhost:6500
+socat -v tcp4-listen:6500,reuseaddr,fork ssl:6.6.6.6:443,verify=0
+
+Modify HTTP traffic in transit to disable gzip/deflage encodings
+
+"Application" ==SSL==> socat #1 ---plain---> netsed ---plain---> socat #2 ==SSL==> Remote service
+#1: $ socat -v openssl-listen:6000,cert=cert.pem,verify=0,reuseaddr,fork tcp4:localhost:6500
+#2: $ netsed tcp 6500 127.0.0.1 6750 's/gzip/ ' 's/deflate/ '
+#3: $ socat -v tcp4-listen:6750,reuseaddr,fork ssl:6.6.6.6:443,verify=0
