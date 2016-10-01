@@ -1,0 +1,8 @@
+# Get the firewall config
+netsh firewall show config
+# Poke a hole in the firewall
+Netsh firewall add portopening protocol=TCP port=23 name=[name] scope=custom addresses=[allowed source IP/cidr]
+# Close a hole in the firewall
+Netsh firewall del portopening protocol=TCP port=23
+# Disable the firewall
+Netsh firewall set opmode disable

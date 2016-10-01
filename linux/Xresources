@@ -1,0 +1,18 @@
+! Place this in the .Xresources file
+! Run this command to set it up
+! xrdb .Xresources
+
+xterm*loginshell: true
+xterm*savelines: 16384
+xterm*rightScrollBar: true
+xterm*ScrollBar: true
+
+xterm*foreground: black
+xterm*background: LightGray
+xterm*color14: DarkBlue
+xterm*color10: ForestGreen
+
+xterm*font: fixed
+xterm*boldFont: fixed
+xterm*geometry: 130x30
+!xterm.vt100.allowTitleOps: false

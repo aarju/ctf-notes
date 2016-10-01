@@ -1,0 +1,14 @@
+	• Zone transfer using windows nslookup interactive mode
+		○ Set the DNS server
+			§ Server [ip address]
+		○ Say we want all records
+			§ Set type=any
+		○ Zone transfer
+			§ Ls -d [target domain]
+			§ Ls -d [domain] > filename
+		○ View file
+			§ View [filename]
+	• Zone transfer using dig
+		○ dig @[server] [domain] -t AXFR
+	• Pull updated records only
+ 

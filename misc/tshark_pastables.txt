@@ -1,0 +1,40 @@
+# quick list of all conversations in a capture with the number of occurances.
+tshark -n -r FOR572_wireless.pcap -T fields -e ip.src -e ip.dst| sort | uniq -c | sort -r
+
+# List the DNS Names queried on a network
+tshark -n -r FOR572_wireless.pcap -Y 'dns.qry.name' -T fields -e dns.qry.name | sort | uniq -c
+
+# see the commands scheduled
+tshark -r stark-20120403-full-smb_smb2.pcap -n -Y 'atsvc.atsvc_JobInfo.command' -T fields -e frame.time -e ip.src -e ip.dst -e atsvc.atsvc_JobInfo.command
+
+# WIFI
+# Find the endpoint conversations on a wifi network - only works on unencrypted
+tshark -n -r WLAN.pcap -Y 'wlan_mgt.ssid=="Covert_WLAN"' -T fields -e wlan.sa -e wlan.da | sort | uniq -c
+
+# find IPs talking to or from a piece of hardware
+tshark -n -r FOR572_wireless.pcap -Y 'wlan.sa == 00:21:63:93:8d:d9 and ip' -T fields -e ip.src | sort | uniq -c
+
+tshark -n -r FOR572_wireless.pcap -Y 'wlan.da == 00:21:63:93:8d:d9 and ip' -T fields -e ip.src | sort | uniq -c 
+
+# List the smb conversations
+tshark -n -r pcap.pcap -Y 'smb' -T fields -e ip.src -e ip.dst 
+
+# smb file transfers
+tshark -r stark-20120403-full-smb_smb2-singlesession.pcap -n -Y 'smb.file' -T fields -e ip.src -e ip.dst -e smb.file
+
+# lock a file for access
+tshark -r pcap.pcap -n -Y 'smb.cmd == 0x24' -T fields -e frame.time -e ip.src -e ip.dst -e smb.file 
+
+# list the file transfers, removing the DC and other infrastructure reduces noise
+tshark -n -r pcap.pcap -Y '(smb.cmd == 0xa2 && (smb.fid == 0)) && !(ip.addr == 10.1.1.1) && !(ip.addr == 10.1.1.2)' -T fields -e ip.src -e ip.dst -e smb.path -e smb.file | sort | uniq -c | sort -nr
+
+
+# smb file opens
+tshark -r pcap.pcap -n -Y 'smb.cmd == 0xa2'
+# smb file opens without the FID
+tshark -r pcap.pcap -n -Y 'smb.cmd == 0xa2 and !smb.fid and smb.file'
+
+
+
+# find at jobs
+tshark -r stark-20120403-full-smb_smb2.pcap -n -Y 'atsvc'
