@@ -1,3 +1,11 @@
+# Invoke-PasswordSpray
+# Author: Aaron Jewitt @acjewitt
+# Purpose: Safely conduct a password spray attack from within a domain without locking out accounts 
+#
+# Invoke password spray will query the PDC for all users that are allowed to log in without a smart card
+# remove any user from the list if they have any failed login attempts
+# and then attempt the selected password against all of those users.
+
 function Get-PDC{
     [System.DirectoryServices.ActiveDirectory.Domain]::GetComputerDomain().pdcroleowner.IPAddress
 }
