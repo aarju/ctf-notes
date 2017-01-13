@@ -1,0 +1,11 @@
+# If you can find a LFI vulnerability on a file server you can sometimes access the proc filesystem
+# you can then enumerate information about the system, or start a netcat
+
+/proc/version
+/proc/mounts
+
+/proc/net/arp
+/proc/net/route
+/proc/net/tcp
+/proc/net/udp
+/proc/net/fib_trie
