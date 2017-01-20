@@ -6,6 +6,7 @@
     .Description
     This script uses a menu driven system for an administrator to conduct scans against a collection of hosts on a domain.
     This script requires the PSSurvey.ps1 script to be in the current directory so that it can be loaded and executed on the remote host.
+    The data comes back in a CSV format so that it can be analyzed using 'big data' tools such as Splunk.
 
     .Usage
     powershell.exe -exec bypass systemscanner.ps1
