@@ -12,8 +12,7 @@
 
     .Author
     Aaron Jewitt
-    Aaron.c.jewitt.ctr@mail.mil
-    RCC-E
+    @acjewitt
 
 #>
 
