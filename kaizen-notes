@@ -1,0 +1,44 @@
+Examine the packet capture file. The flag is the number of TCP connections multiplied by the number of unique HTTP hosts that content was requested from
+
+Open this file: hash_list.txt. The file contains a pair of strings on every line. The first string is a word and the second string is purportedly a SHA256 hash of that string.
+
+Identify how many word-hash pairs actually match.
+
+For example, given the following list:
+
+max 9baf3a40312f39849f46dad1040f2f039f1cffa1238c41e9db675315cfad39b6 => True
+min 1f6fa6f69d185e6086d04e7330361bf9001a3b8d0ce511171055dc34eb90c1c1 => False
+ord 55df18d062878fb6d3f4a6d1928fd19c1b49d5f8b90fbfcc76d5e1b1b2b75ef8 => True
+Thus two strings actually match. For your answer, you would enter 2.
+
+Attached is a grepped version of an sshd log from a server. Some abnormal activity is coming from one of the IP addresses. Which one?
+
+You are checking in on the requests to your web server from within your network. According to some documentation, everyone on the network should have and be using Google Chrome version 59 or higher, Microsoft Edge version 12 or higher, or Mozilla Firefox version 40 or higher. In the attached request log, how many requests came from other things?
+
+This file contains a line from the famous "Cyrus Cylinder" from ancient Persia. But the text is encrypted using XOR (look it up). The key consists of three lowercase letters. What is the key?
+
+Find the IP address with the most occurances in the log file.
+
+Prime number generation is a crucial component in the world of crpytography. This problem has a small twist to it!
+
+Submit the total number of prime numbers between 1-25000 that have a prime number of 1's in it's binary representation.
+
+What is the decimal format of the IP Address for the Google DNS server 8.8.8.8? An example of decimal format for 192.168.1.1 is 3232235777
+
+The attached file has table of passwords to hashes. The hashing algorithm is md5(sha1(md5(md5(password) + sha1(password)) + md5(salt))). The salt is the same for all passwords and is only 3 alphanumeric characters long. What is the salt?
+
+-----
+Hard
+-----
+This pcap was created on your server at 172.17.0.2. What command was run against this IP address by another device?
+
+In the attached list of IP addresses, what country has the most IPs? The answer should be the two-letter country code of the country. If multiple countries have the same amount, use the country which comes last in alphabetical order.
+For best practice, do all country code lookups using a web API. If you need, the hint includes a good API you can use.
+
+You intercepted an e-mail with the following attachment. The e-mail claimed to be sending a secret code.
+
+This is a capture of traffic captured from a network interface on your computer. You were using it in a small office at the time. What is physical address (without colons/all lowercase) of the device that is behaving suspiciously?
+
+This is a capture of traffic captured from a network interface on your computer. You were using it in a small office at the time. What type of server software is running at 74.119.117.66?
+
+
