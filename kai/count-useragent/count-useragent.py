@@ -6,6 +6,4 @@ Mozilla Firefox version 40 or higher. In the attached request log, how many
 requests came from other things?
 '''
 
-
-
 import sys
