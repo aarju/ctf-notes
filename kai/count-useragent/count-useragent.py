@@ -6,4 +6,12 @@ Mozilla Firefox version 40 or higher. In the attached request log, how many
 requests came from other things?
 '''
 
+
+'''
+open the file
+readlines
+close the file
+for each line find the lines containing a useragent
+
+'''
 import sys
