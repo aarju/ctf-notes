@@ -14,18 +14,25 @@ https://dns.google.com/resolve?name=example
 '''
 
 import argparse
-import urllib2
+import urllib.request
+import json
+
 # read in the arguments
 parser = argparse.ArgumentParser()
 parser.add_argument("domain")
 # parser.add_argument('-d','--d','--domain',type=str, help='domain name to query')
 domain = parser.parse_args().domain
 
-url = "https://dns.google.com/resolve?name=" + domain
+fullurl = "https://dns.google.com/resolve?name=" + domain
 
-print url
-response = urllib.request.urlopen(url)
-print response
+rawResp = urllib.request.urlopen(fullurl)
+charset = rawResp.info().get_content_charset()
+response = rawResp.read().decode(charset)
+
+print(response)
+
+print(json.dumps(response))
+
 
 # exit with help if no arguments were given
 
