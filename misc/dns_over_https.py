@@ -22,16 +22,21 @@ parser = argparse.ArgumentParser()
 parser.add_argument("domain")
 # parser.add_argument('-d','--d','--domain',type=str, help='domain name to query')
 domain = parser.parse_args().domain
-
-fullurl = "https://dns.google.com/resolve?name=" + domain
+if len(domain) < 1500:
+    padding = "A" * (1500 - len(domain))
+fullurl = "https://dns.google.com/resolve?name=" + domain + "&type=1&random_padding=" + padding
 
 rawResp = urllib.request.urlopen(fullurl)
 charset = rawResp.info().get_content_charset()
 response = rawResp.read().decode(charset)
 
-print(response)
-
-print(json.dumps(response))
+answer = json.loads(response)['Answer']
+try:
+    for a in answer:
+        if a['type'] == 1:
+            print(a['data'])
+except:
+    pass
 
 
 # exit with help if no arguments were given
