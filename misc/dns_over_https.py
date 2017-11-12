@@ -3,45 +3,51 @@
 Purpose: use Google DNS over HTTPS to resolve a hostname
 
 Arguments:
-    -d domain       Return the IPv4 address of the requested domain
-    -f filename     Read in a list of domain names from a filename, return a 
-                    list containing touples with the domain name and IPV4 address
-
-Future Feature Make all DNS requests a static size by using the Random_padding function within the API.
-
+    domain       Return the IPv4 address of the requested domain
+   
 https://dns.google.com/resolve?name=example
 
 '''
 
 import argparse
-import urllib.request
 import json
+import urllib.request
+import string
+import random
 
-# read in the arguments
+# read in the domain name
 parser = argparse.ArgumentParser()
 parser.add_argument("domain")
 # parser.add_argument('-d','--d','--domain',type=str, help='domain name to query')
 domain = parser.parse_args().domain
-if len(domain) < 1500:
-    padding = "A" * (1500 - len(domain))
-fullurl = "https://dns.google.com/resolve?name=" + domain + "&type=1&random_padding=" + padding
 
-rawResp = urllib.request.urlopen(fullurl)
-charset = rawResp.info().get_content_charset()
-response = rawResp.read().decode(charset)
+def https_dns_query(domain):
+    if len(domain) < 500: # pad all requests up to at least 500 characters
+        sizeof_padding = 500 - len(domain)
+        i = 1
+        padding = ""
+        while i < sizeof_padding:
+            padding += random.choice(string.ascii_letters)
+            i = i+1
+    fullurl = "https://dns.google.com/resolve?name=" + domain + \
+        "&edns_client_subnet=0.0.0.0/0&type=1&random_padding=" + padding
 
-answer = json.loads(response)['Answer']
-try:
-    for a in answer:
-        if a['type'] == 1:
-            print(a['data'])
-except:
-    pass
+    raw_response = urllib.request.urlopen(fullurl)
+    charset = raw_response.info().get_content_charset()
+    response = raw_response.read().decode(charset)
 
+    answers = json.loads(response)['Answer']
+    for answer in answers:
+        names = []
+        if answer['type'] == 1:
+            names.append(answer['data'])
+    return names.pop()
+
+
+print(https_dns_query(domain))
 
 # exit with help if no arguments were given
 
 # execute the API request with the domain name
 
 # return the 
-
