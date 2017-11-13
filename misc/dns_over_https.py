@@ -18,8 +18,7 @@ import random
 # read in the domain name
 parser = argparse.ArgumentParser()
 parser.add_argument("domain")
-# parser.add_argument('-d','--d','--domain',type=str, help='domain name to query')
-domain = parser.parse_args().domain
+domain_input = parser.parse_args().domain
 
 def https_dns_query(domain):
     if len(domain) < 500: # pad all requests up to at least 500 characters
@@ -41,10 +40,10 @@ def https_dns_query(domain):
         names = []
         if answer['type'] == 1:
             names.append(answer['data'])
-    return names.pop()
+    return names
 
 
-print(https_dns_query(domain))
+print(https_dns_query(domain_input))
 
 # exit with help if no arguments were given
 
