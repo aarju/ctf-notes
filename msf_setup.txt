@@ -1,0 +1,43 @@
+# msf install on ubuntu server
+
+sudo su
+
+sudo apt-get update
+sudo apt-get upgrade -y
+sudo apt-get install -y ruby ruby-dev rubygems build-essential libssl-dev libreadline-dev libpq5 libpq-dev libreadline5 libpcap-dev openjdk-8-jre git-core autoconf postgresql libsqlite3-dev pgadmin3 curl zlib1g-dev libxml2-dev curl zlib1g-dev libxslt1-dev vncviewer libyaml-dev nmap
+
+sudo gem install wirble sqlite3 bundler
+
+sudo -s
+su postgres
+createuser msf -P -S -R -D
+createdb -O msf msf
+exit
+
+sudo update-rc.d postgresql enable
+service postgresql restart
+
+cd /opt
+sudo git clone https://github.com/rapid7/metasploit-framework.git
+sudo chown -R `whoami` /opt/metasploit-framework
+cd metasploit-framework
+bundle install
+sudo bash -c 'for MSF in $(ls msf*); do ln -s /opt/metasploit-framework/$MSF /usr/local/bin/$MSF;done'
+
+sudo touch /opt/metasploit-framework/config/database.yml
+sudo echo "production:" > /opt/metasploit-framework/config/database.yml
+sudo echo " adapter: postgresql" >> /opt/metasploit-framework/config/database.yml
+sudo echo " database: msf" >> /opt/metasploit-framework/config/database.yml
+sudo echo " username: msf" >> /opt/metasploit-framework/config/database.yml
+sudo echo " password: abc123" >> /opt/metasploit-framework/config/database.yml
+sudo echo " host: 127.0.0.1" >> /opt/metasploit-framework/config/database.yml
+sudo echo " port: 5432" >> /opt/metasploit-framework/config/database.yml
+sudo echo " pool: 75" >> /opt/metasploit-framework/config/database.yml
+sudo echo " timeout: 5" >> /opt/metasploit-framework/config/database.yml
+cat /opt/metasploit-framework/config/database.yml
+
+sudo sh -c "echo export MSF_DATABASE_CONFIG=/opt/metasploit-framework/config/database.yml >> /etc/profile"
+source /etc/profile
+
+msfconsole -y /opt/metasploit-framework/config/database.yml
+
