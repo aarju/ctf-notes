@@ -1,0 +1,8 @@
+# Capture all while SSH'd on to a host:
+/usr/sbin/tcpdump -i eth0 -s 0 -w /tmp/outputfile.pcap "not port 22"
+
+# Capture SIP
+/usr/sbin/tcpdump -i eth0 -s 0 -w udp.pcap "udp port 5060"
+
+# Full capture and dump to a pcap
+/usr/sbin/tcpdump -i eth0 -s 0 -w out.pcap

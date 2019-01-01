@@ -1,0 +1,7 @@
+<ruby>
+framework.sessions.each do |num,session|
+run_single("set SESSION #{num}")print_status("Running #{active_module.fullname} against session #{num}")
+run_single("run -j")
+sleep 1
+end 
+</ruby>
