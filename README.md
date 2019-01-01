@@ -19,3 +19,10 @@ https://www.netsparker.com/blog/web-security/sql-injection-cheat-sheet/
 
 http://brutelogic.com.br/blog/
 
+http://syscalls.kernelgrok.com/
+
+http://jsonlint.com/
+
+http://www.bartleby.com/141/
+
+http://blog.portswigger.net/2016/07/executing-non-alphanumeric-javascript.html
