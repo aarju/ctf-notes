@@ -52,7 +52,6 @@ function Invoke-WMIPersistCheck {
     $wmiEvents
 }
 
-# These two consumers are very common and confirmed to be benign unless they have been modified
 
 
 function Invoke-WMIUnkownPersistCheck {
@@ -64,7 +63,7 @@ function Invoke-WMIUnkownPersistCheck {
     )
     <#
         .synopsis
-        Executes Invoke-WMIPersistCheck and checks the results against known good. Only displays the unknown entries.
+        Executes Invoke-WMIPersistCheck and checks the results against known good. Displays the unknown entries to stdout.
 
         PowerShell Function: Invoke-WMIUnkownPersistCheck
         Author: Aaron Jewitt
@@ -72,7 +71,8 @@ function Invoke-WMIUnkownPersistCheck {
         .Description
         Executes the Invoke-WMIPersistCheck function and checks the results against a list of known good Consumers. 
     #>
-
+    
+    # These two consumers are very common and confirmed to be benign unless they have been modified
     $knowngood = @(
                "BVTConsumer",
                "SCM Event Log Consumer"
