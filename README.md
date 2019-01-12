@@ -26,3 +26,5 @@ http://jsonlint.com/
 http://www.bartleby.com/141/
 
 http://blog.portswigger.net/2016/07/executing-non-alphanumeric-javascript.html
+
+https://ired.team/offensive-security-experiments/offensive-security-cheetsheets
